@@ -1,99 +1,116 @@
-# CareBridge Healthcare Access Portal
+# CareBridge - Role-Based Healthcare Access Portal with WSO2 Asgardeo
 
-A secure, Role-Based Access Control (RBAC) healthcare web application demonstrating modern identity security patterns using WSO2 Asgardeo Identity Platform and React.
+CareBridge is a lightweight React application demonstrating Role-Based Access Control (RBAC) using **WSO2 Asgardeo Identity Platform**. It restricts interface views and routes based on user roles (`Doctor` vs `Patient`) extracted directly from decoded OpenID Connect (OIDC) ID tokens.
 
-## 🌟 Overview
+---
 
-The CareBridge Portal demonstrates authentication and authorization mechanisms for sensitive clinical domains. Using Asgardeo's OpenID Connect (OIDC) authentication flow with PKCE (Proof Key for Code Exchange), the portal segregates views and functions between different user roles (such as Doctors and Patients).
+## 🌟 Features
 
-### Key Features
+- **OIDC Authentication:** Secure Login/Logout flow using `@asgardeo/auth-react` SDK with Authorization Code Flow + PKCE.
+- **Role-Based Routing:** Route-level guards protecting `/doctor` and `/patient` paths.
+- **Token Claims Viewer:** Real-time decoding and display of OIDC ID token claims.
+- **Access Control Enforcement:** Automatic redirection to an `Unauthorized (403)` view on permission mismatch.
+- **Diagnostic & Demo Override Mode:** Built-in testing controls for quick evaluation without manual identity reconfiguration.
 
-- **OIDC Authentication with PKCE**: Secure Single-Page Application (SPA) authentication without exposing client secrets.
-- **Role-Based Access Control (RBAC)**: Restricts doctor dashboards and patient health records based on authenticated user tokens.
-- **Dynamic Token Claims Decoding**: Inspects and parses decoded OIDC ID token claims in real time.
-- **Diagnostic & Demo Mode**: Built-in testing override controls for quick evaluation without manual identity reconfiguration.
+---
 
-## 🏗️ Architecture & Tech Stack
+## 🏗️ Architecture Flow
 
-- **Frontend**: React, Vite, Modern CSS
-- **Identity Provider (IdP)**: WSO2 Asgardeo
-- **Auth Protocol**: OAuth 2.0 / OpenID Connect (OIDC) with Authorization Code Flow + PKCE
+```
+[ User Browser ]
+       |
+       v
+[ React (Vite) App ]  <--- `@asgardeo/auth-react` SDK --->  [ WSO2 Asgardeo Cloud ]
+       |                                                            |
+       |-- 1. Redirect to Asgardeo Login -------------------------->|
+       |-- 2. Authenticate & Grant Consent ------------------------>|
+       |<-- 3. Return Authorization Code (PKCE) -------------------|
+       |-- 4. Exchange Code for ID & Access Tokens ---------------->|
+       |
+  (Extract Claims: roles / groups)
+       |
+       +---> Role == 'Doctor'  ---> Render <DoctorDashboard />
+       +---> Role == 'Patient' ---> Render <PatientDashboard />
+       +---> Role Mismatch     ---> Redirect <Unauthorized />
+```
+
+---
+
+## 🔑 Asgardeo Setup Details
+
+1. **Application Type:** Single-Page Application (SPA)
+2. **Authorized Redirect URL:** `http://localhost:5173`
+3. **User Roles Configured:** `Doctor`, `Patient`
+4. **Token Claim Attribute Mapping:** `roles` and `groups` included in ID Token attributes.
+
+---
+
+## 📸 Screenshots
+
+1. **Asgardeo Hosted Login Screen**
+2. **Decoded Claims View (Home Page)**
+3. **Doctor Dashboard (`/doctor`)**
+4. **Patient Dashboard (`/patient`)**
+5. **Unauthorized Access Fallback (403)**
+
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- [Node.js](https://nodejs.org/) (v18+)
 - [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-- An active [WSO2 Asgardeo](https://asgardeo.io/) account
+- Active [WSO2 Asgardeo](https://asgardeo.io/) Account
 
-### 1. Clone the Repository
+### Installation
 
-```bash
-git clone https://github.com/Lashini02/CareBridge-Portal.git
-cd CareBridge-Portal
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Lashini02/CareBridge-Portal.git
+   cd CareBridge-Portal
+   ```
 
-### 2. Install Dependencies
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```bash
-npm install
-```
-
-### 3. Asgardeo Configuration
-
-1. Log in to the Asgardeo Console.
-2. Navigate to **Applications** > **New Application** > **Single-Page Application**.
-3. Configure the following protocol settings:
-   - **Allowed Grant Types**: Code, Refresh Token
-   - **Authorized Redirect URLs**: `http://localhost:5173`
-   - **Allowed Origins**: `http://localhost:5173`
-   - **PKCE**: Mandatory
-4. Under **User Attributes**, ensure **Roles** and **Groups** attributes are marked as Requested.
-5. Under **User Management** > **Roles**, create:
-   - **Doctor** (Assign to doctor accounts)
-   - **Patient** (Assign to patient accounts)
-
-### 4. Configure Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-VITE_ASGARDEO_CLIENT_ID=<YOUR_ASGARDEO_CLIENT_ID>
-VITE_ASGARDEO_BASE_URL=https://api.asgardeo.io/t/<YOUR_ORG_HANDLE>
-VITE_ASGARDEO_REDIRECT_URL=http://localhost:5173
-```
-
-### 5. Run the Application
-
-```bash
-npm run dev
-```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
 Visit `http://localhost:5173` in your browser.
 
+---
+
 ## 🧪 Test Accounts
 
-| Role | Test Username | Permissions / Access |
+| Role | Test Username | Access Permissions |
 | --- | --- | --- |
 | **Doctor** | `doctor@carebridge.test` | Clinical diagnosis, patient list, care notes |
 | **Patient** | `patient@carebridge.test` | Personal health records, lab reports |
+
+---
 
 ## 📁 Project Structure
 
 ```
 ├── src/
-│   ├── components/      # Reusable UI components
-│   ├── pages/           # Doctor, Patient, and Login pages
+│   ├── components/      # Reusable UI components (Navbar, ProtectedRoute)
+│   ├── pages/           # Doctor, Patient, Home, and Unauthorized pages
 │   ├── App.jsx          # Route configurations and access guards
-│   ├── main.jsx         # Application entry point
-│   └── index.css
-├── .gitignore
-├── index.html
-├── package.json
-├── README.md
-└── vite.config.js
+│   ├── main.jsx         # Application entry point with AuthProvider
+│   └── index.css        # Global CSS styles
+├── .gitignore           # Git ignore rules
+├── index.html           # HTML template
+├── netlify.toml         # Netlify build & SPA routing configuration
+├── package.json         # Dependencies and scripts
+├── README.md            # Documentation
+└── vite.config.js       # Vite configuration
 ```
+
+---
 
 ## 🛡️ License
 
