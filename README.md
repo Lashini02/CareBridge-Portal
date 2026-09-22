@@ -48,10 +48,20 @@ CareBridge is a lightweight React application demonstrating Role-Based Access Co
 ## 📸 Screenshots
 
 1. **Asgardeo Hosted Login Screen**
+   <img width="1322" height="846" alt="Screenshot 2026-09-23 000309" src="https://github.com/user-attachments/assets/f49bb08e-cca8-4caf-a9bc-4e56962c3d7d" />
+
 2. **Decoded Claims View (Home Page)**
+   <img width="1850" height="863" alt="image" src="https://github.com/user-attachments/assets/f19d78c7-4d1f-44f3-be85-2ca3109bbfbb" />
+
 3. **Doctor Dashboard (`/doctor`)**
+   <img width="1915" height="787" alt="image" src="https://github.com/user-attachments/assets/643aa342-76e0-4dbf-848c-2df71304aa0d" />
+
 4. **Patient Dashboard (`/patient`)**
+   <img width="1908" height="712" alt="image" src="https://github.com/user-attachments/assets/40474479-708b-45fe-9f2b-47b5564898e5" />
+
 5. **Unauthorized Access Fallback (403)**
+   <img width="986" height="717" alt="Screenshot 2026-09-22 223729" src="https://github.com/user-attachments/assets/e953fea9-8ef2-4010-bfa7-dc49a6aff6f5" />
+
 
 ---
 
